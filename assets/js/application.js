@@ -1,6 +1,18 @@
-$(document).ready(function () {
-    var container = document,
-        width = $(container).width(),
+$(document).ready(function ($) {
+    // init select picket
+    $('.app-selectpicker').selectpicker();
+
+    // sidebar toggle
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+
+    // draw map
+    var container = '#map';
+    $(container).css('height', $(document).height());
+
+    var width = $(container).width(),
         height = $(container).height();
 
     var projection = d3.geo.albers()
@@ -21,7 +33,7 @@ $(document).ready(function () {
         maxZoomRatio = 2,
         zoomListener = d3.behavior.zoom().scaleExtent([minZoomRatio, maxZoomRatio]).on("zoom", zoom);
 
-    var svg = d3.select("body").append("svg")
+    var svg = d3.select(container).append("svg")
         .attr("width", width)
         .attr("height", height)
         .call(zoomListener)

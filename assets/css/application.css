@@ -23,153 +23,117 @@ h6, .h6 {
     color: #333;
 }
 
-
-/*
- * Override Bootstrap's default container.
- */
-
-@media (min-width: 1200px) {
-    .container {
-        width: 970px;
-    }
+.btn:focus, .btn:active {
+    outline: none !important;
 }
 
-
-/*
- * Masthead for nav
- */
-
-#head {
-    background-color: #428bca;
-    -webkit-box-shadow: inset 0 -2px 5px rgba(0,0,0,.1);
-    box-shadow: inset 0 -2px 5px rgba(0,0,0,.1);
+#wrapper {
+    padding-left: 0;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
 }
 
-/* Nav links */
-.tree-nav-item {
-    position: relative;
-    display: inline-block;
+#wrapper.toggled {
+    padding-left: 250px;
+}
+
+#sidebar-wrapper {
+    z-index: 1000;
+    position: fixed;
+    left: 250px;
+    width: 0;
+    height: 100%;
+    margin-left: -250px;
+    overflow-y: auto;
+    border-right: 5px solid #2e6da4;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    width: 250px;
+}
+
+#content-wrapper {
+    width: 100%;
+}
+
+#wrapper.toggled #content-wrapper {
+    position: absolute;
+    margin-right: -250px;
+}
+
+/* Sidebar Styles */
+
+.sidebar-nav {
+    position: absolute;
+    top: 0;
+    width: 250px;
+    margin: 0;
+    list-style: none;
     padding: 10px;
-    font-weight: 500;
-    color: #cdddeb;
 }
-.tree-nav-item:hover,
-.tree-nav-item:focus {
-    color: #fff;
+
+.sidebar-nav li a {
+    display: block;
     text-decoration: none;
 }
 
-/* Active state gets a caret at the bottom */
-#head nav .active {
-    color: #fff;
-}
-#head nav .active:after {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 0;
-    height: 0;
-    margin-left: -5px;
-    vertical-align: middle;
-    content: " ";
-    border-right: 5px solid transparent;
-    border-bottom: 5px solid;
-    border-left: 5px solid transparent;
+.sidebar-nav li a:hover {
+    text-decoration: none;
 }
 
-
-/*
- * Blog name and description
- */
-
-.tree-header {
-    padding-top: 20px;
-    padding-bottom: 20px;
-}
-.tree-title {
-    margin-top: 30px;
-    margin-bottom: 0;
-    font-size: 60px;
-    font-weight: normal;
-}
-.tree-description {
-    font-size: 20px;
-    color: #999;
+.sidebar-nav li a:active,
+.sidebar-nav li a:focus {
+    text-decoration: none;
 }
 
-
-/*
- * Main column and sidebar layout
- */
-
-.tree-main {
+.sidebar-nav > .sidebar-brand {
+    height: 65px;
     font-size: 18px;
-    line-height: 1.5;
+    line-height: 60px;
 }
 
-/* Sidebar modules for boxing content */
-.sidebar-module {
-    padding: 15px;
-    margin: 0 -15px 15px;
-}
-.sidebar-module-inset {
-    padding: 15px;
-    background-color: #f5f5f5;
-    border-radius: 4px;
-}
-.sidebar-module-inset p:last-child,
-.sidebar-module-inset ul:last-child,
-.sidebar-module-inset ol:last-child {
-    margin-bottom: 0;
+.sidebar-nav .form-group {
+    margin-bottom: 30px;
 }
 
+@media(min-width:768px) {
+    #wrapper {
+        padding-left: 250px;
+    }
 
+    #wrapper.toggled {
+        padding-left: 0;
+    }
 
-/* Pagination */
-.pager {
-    margin-bottom: 60px;
-    text-align: left;
-}
-.pager > li > a {
-    width: 140px;
-    padding: 10px 20px;
-    text-align: center;
-    border-radius: 30px;
-}
+    #sidebar-wrapper {
+        width: 250px;
+    }
 
+    #wrapper.toggled #sidebar-wrapper {
+        width: 0;
+    }
 
-/*
- * Blog posts
- */
-
-.tree-post {
-    margin-bottom: 60px;
-}
-.tree-post-title {
-    margin-bottom: 5px;
-    font-size: 40px;
-}
-.tree-post-meta {
-    margin-bottom: 20px;
-    color: #999;
+    #wrapper.toggled #content-wrapper {
+        position: relative;
+        margin-right: 0;
+    }
 }
 
+#menu-toggle {
+    position: absolute;
+    padding: 5px 7px 5px 5px;
+    top: 15px;
 
-/*
- * Footer
- */
-
-.tree-footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    margin-top: 20px;
-    padding: 10px;
-    color: #999;
-    text-align: center;
-    background-color: #f9f9f9;
-    border-top: 1px solid #e5e5e5;
-}
-.tree-footer p:last-child {
-    margin-bottom: 0;
+    -webkit-border-top-left-radius: 0px;
+    -webkit-border-bottom-left-radius: 0px;
+    -moz-border-radius-topleft: 0px;
+    -moz-border-radius-bottomleft: 0px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
 }

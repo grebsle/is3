@@ -2,7 +2,8 @@
 <html>
 <head>
     <title>Title of the document</title>
-    <link href="assets/css/lib/bootstrap.css" rel="stylesheet">
+    <link href="assets/css/lib/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/lib/bootstrap-select.min.css" rel="stylesheet">
     <link href="assets/css/application.css" rel="stylesheet">
 
     <script src="assets/js/lib/jquery.min.js"></script>
@@ -10,9 +11,69 @@
 
 <body>
 
+<div id="wrapper">
+    <div id="sidebar-wrapper">
+        <form role="form">
+            <ul class="sidebar-nav">
+                <li>
+                    <div class="form-group">
+                        <label for="app-datasets">Datasets:</label>
+                        <select name="datasets" id="app-datasets" class="form-control app-selectpicker"
+                                data-live-search="true">
+                            <option value="1">Option 1</option>
+                            <option value="2">Option 2</option>
+                            <option value="3">Option 3</option>
+                        </select>
+                    </div>
+                </li>
+                <li>
+                    <div class="form-group">
+                        <label for="app-factors">Factors:</label>
+                        <select name="dataset" id="app-factors" class="form-control app-selectpicker"
+                                data-live-search="true">
+                            <option value="1">Option 1</option>
+                            <option value="2">Option 2</option>
+                            <option value="3">Option 3</option>
+                        </select>
+                    </div>
+                </li>
+                <li>
+                    <div class="form-group">
+                        <label for="app-visualisation-type">Visualization type:</label>
+                        <select name="dataset" id="app-visualisation-type" class="form-control app-selectpicker"
+                                data-live-search="true">
+                            <option value="1">Option 1</option>
+                            <option value="2">Option 2</option>
+                            <option value="3">Option 3</option>
+                        </select>
+                    </div>
+                </li>
+
+                <li>
+                    <div class="form-group">
+                        <label for="app-council">Council:</label>
+                        <select name="dataset" id="app-council" class="form-control app-selectpicker"
+                                data-live-search="true">
+                            <option value="1">Option 1</option>
+                            <option value="2">Option 2</option>
+                            <option value="3">Option 3</option>
+                        </select>
+                    </div>
+                </li>
+            </ul>
+        </form>
+    </div>
+    <div id="content-wrapper">
+        <button id="menu-toggle" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-right"></span></button>
+        <div id="map"></div>
+    </div>
+</div>
+
 <!-- Placed at the bottom for better performance -->
 <script src="assets/js/lib/d3.v3.min.js"></script>
 <script src="assets/js/lib/topojson.v1.min.js"></script>
+<script src="assets/js/lib/bootstrap.min.js"></script>
+<script src="assets/js/lib/bootstrap-select.min.js"></script>
 <script src="assets/js/application.js"></script>
 
 </body>

@@ -1,3 +1,12 @@
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
 $(document).ready(function ($) {
     // init select picket
     $('.app-selectpicker').selectpicker();
@@ -42,10 +51,20 @@ $(document).ready(function ($) {
         .attr("height", height)
         .attr("transform", "translate(0,0)");
 
-    d3.json("data/all_councils_topo.json", function (error, councilArea) {
-        svg.append("path")
-            .datum(topojson.feature(councilArea, councilArea.objects["layer1"]))
-            .attr("id", "council_area")
-            .attr("d", path);
+    d3.json("data/all_councils_topo.json", function (error, data) {
+        var councils = topojson.feature(data, data.objects["layer1"]);
+
+        $.each(councils.features, function() {
+            var council = {
+                type: 'FeatureCollection',
+                features: [this]
+            };
+
+            svg.append("path")
+                .datum(council)
+                .attr("id", "council_area")
+                .style('fill', getRandomColor())
+                .attr("d", path);
+        });
     });
 });

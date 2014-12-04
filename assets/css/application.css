@@ -4,6 +4,11 @@ svg .app-council-area {
     stroke-width: 1px;
 }
 
+svg .app-council-area:hover {
+    stroke:#2e6da4;
+    stroke-width: 2px;
+}
+
 /*
  * Globals
  */

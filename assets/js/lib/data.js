@@ -34,6 +34,10 @@ IS3.data = {
                 IS3.data.data[key] = data;
             });
         });
+
+        d3.json("assets/data/referendum.json", function (error, data) {
+            IS3.data.data.referendum = data;
+        });
     },
     getDeprivationPercentage: function(type, area) {
         // default
@@ -73,5 +77,21 @@ IS3.data = {
     },
     parseCouncilCode: function(url) {
         return url.substr(url.lastIndexOf('/') + 1);
+    },
+    getReferrendumPercentage: function(council, yes) {
+        var percentage = 0;
+        if (typeof yes == "undefined")
+            yes = true;
+
+        $.each(this.data.referendum, function() {
+            if (this.code == council) {
+                if (yes)
+                    percentage = this.yes / this.votes * 100;
+                else
+                    percentage = this.no / this.votes * 100;
+            }
+        });
+
+        return parseInt(percentage);
     }
 };

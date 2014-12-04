@@ -127,9 +127,28 @@ IS3.visualisations = {
                         var code = area.features[0].properties.gss;
 
                         return IS3.visualisations.colors.getColorForPercentage(data_scale(IS3.data.getDeprivationPercentage(data_type, code)));
-                    }).attr("d", path);
+                    }).attr("d", path)
+                    .on("mouseover", function (council) {
+                        $(this).addClass('hover');
 
+                        var percentage = IS3.data.getReferrendumPercentage(council.features[0].properties.gss),
+                            el = $('<button class="btn btn-primary">Yes <span class="badge">' + percentage +'%</span></button>');
 
+                        $('body').append(el);
+                        $(this).data('hover-element', el);
+
+                        $(document).mousemove(function(event) {
+                            el.css({
+                                position: 'absolute',
+                                top: event.pageY + 10,
+                                left: event.pageX - $(el).width() / 2
+                            });
+                        });
+                    })
+                    .on("mouseout", function () {
+                        $(this).data('hover-element').fadeOut();
+                        $(this).removeClass('hover');
+                    });
             });
         });
     },

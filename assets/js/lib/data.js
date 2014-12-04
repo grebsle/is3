@@ -14,17 +14,7 @@ IS3.data = {
             $('#app-factors').append('<option value="' + key + '">' + value + '</option>')
         });
 
-        this.initCouncils();
         this.preloadData();
-    },
-    initCouncils: function() {
-        d3.json("assets/data/factors/overall.json", function(error, data) {
-            $.each(data.results.bindings, function() {
-                $('#app-councils').append('<option value="' + IS3.data.parseCouncilCode(this.council.value) + '">' + this.label.value + '</option>')
-                    .selectpicker('refresh');
-            });
-
-        });
     },
     preloadData: function() {
         this.data = {};
@@ -37,6 +27,17 @@ IS3.data = {
 
         d3.json("assets/data/referendum.json", function (error, data) {
             IS3.data.data.referendum = data;
+        });
+
+        d3.json("assets/data/factors/overall.json", function(error, data) {
+            IS3.data.data.councils = {};
+            $.each(data.results.bindings, function() {
+                var code = IS3.data.parseCouncilCode(this.council.value);
+                IS3.data.data.councils[code] = this.label.value;
+
+                $('#app-councils').append('<option value="' + code + '">' + this.label.value + '</option>')
+                    .selectpicker('refresh');
+            });
         });
     },
     getDeprivationPercentage: function(type, area) {
@@ -93,5 +94,8 @@ IS3.data = {
         });
 
         return parseInt(percentage);
+    },
+    getCouncilName: function(code) {
+        return IS3.data.data.councils[code];
     }
 };

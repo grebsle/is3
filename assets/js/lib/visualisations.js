@@ -105,7 +105,7 @@ IS3.visualisations = {
             height = $(container).height();
 
         var projection = d3.geo.albers()
-            .center([0.795, 57])
+            .center([-6, 59])
             .rotate([4.4, 0])
             .parallels([50, 60])
             .scale(8000)
@@ -162,8 +162,10 @@ IS3.visualisations = {
                     .on("mouseover", function (council) {
                         $(this).addClass('hover');
 
-                        var percentage = IS3.data.getReferrendumPercentage(council.features[0].properties.gss),
-                            el = $('<button class="btn btn-primary">Yes <span class="badge">' + percentage +'%</span></button>');
+                        var gss = council.features[0].properties.gss;
+                        var percentage = IS3.data.getReferrendumPercentage(gss),
+                            council_name = IS3.data.getCouncilName(gss),
+                            el = $('<button class="btn btn-primary">' + council_name + ' <span class="badge">' + percentage +'% Yes</span></button>');
 
                         $('body').append(el);
                         $(this).data('hover-element', el);

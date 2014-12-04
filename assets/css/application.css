@@ -159,6 +159,7 @@ h6, .h6 {
     width: 100%;
     overflow: hidden;
     position: relative;
+    float: left;
 }
 
 #app-window-container .window .header {
@@ -179,7 +180,7 @@ h6, .h6 {
     float: right;
 }
 
-#app-window-container .window:first-of-type {
+#app-window-container .window:first-of-type .content {
     border-right: 2px solid #2e6da4;
 }
 

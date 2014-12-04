@@ -18,14 +18,7 @@ IS3.visualisations = {
             });
         }).on('click', '.app-minimize-window', function () {
             // window minimize event
-            $(this).closest('.window').fadeOut(IS3.visualisations.config.transition_duration, function () {
-                var button = $('<button class="btn btn-default"></button>')
-                    .html($('.title input', this).val())
-                    .data('window-number', $(this).data('window-number'));
-
-                $('#app-minimized-windows').append(this);
-                $('#app-bring-back-window-buttons').append(button);
-            });
+            IS3.visualisations.minimize($(this).closest('.window'));
         }).on('click', '#app-bring-back-window-buttons button', function () {
             // bring window back
             var window_number = $(this).data('window-number'),
@@ -36,6 +29,8 @@ IS3.visualisations = {
 
             // remove button
             $(this).fadeOut(function() { $(this).remove() });
+        }).on('click', '.app-maximize-window', function() {
+            IS3.visualisations.maximize($(this).closest('.window'));
         });
 
         // place bring back buttons according to browser size
@@ -45,10 +40,46 @@ IS3.visualisations = {
             })
         }).resize();
     },
+    maximize: function(window) {
+        $('#app-window-container .window').each(function () {
+            if (this != window.get(0)) {
+                IS3.visualisations.minimize(this);
+            }
+        });
+        IS3.visualisations.refreshWindows();
+    },
+    minimize: function (window) {
+        $(window).fadeOut(IS3.visualisations.config.transition_duration, function () {
+            var button = $('<button class="btn btn-default"></button>')
+                .html($('.title input', this).val())
+                .data('window-number', $(this).data('window-number'));
+
+            $('#app-minimized-windows').append(this);
+            $('#app-bring-back-window-buttons').append(button);
+            IS3.visualisations.refreshWindows();
+        });
+    },
     addWindow: function(window) {
-        $('#app-window-container').append(window);
+        var container = $('#app-window-container');
+
+        if ($('.window', container).length >= 2)
+            IS3.visualisations.minimize($('.window:first', container));
+            container.append(window);
+
+        this.refreshWindows();
         window.fadeIn();
     },
+
+    refreshWindows: function() {
+        var container = $('#app-window-container');
+
+        if ($('.window', container).length >= 2) {
+            $('.window', container).css('width', '50%');
+        } else {
+            $('.window', container).css('width', '100%');
+        }
+    },
+
     add: function () {
         var container = $('#app-window-template').clone()
             .removeAttr('id')

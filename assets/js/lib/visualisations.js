@@ -1,116 +1,13 @@
 IS3.visualisations = {
-    config: {
-        transition_duration: 400,
-        window_number: 1
-    },
     types: {
         map: "Map",
-        line: "Line Graph"
-
+        line: "Line Chart"
     },
     init: function () {
         $.each(this.types, function (key, value) {
             $('#app-visualisations').append('<option value="' + key + '">' + value + '</option>')
         });
-
-        $('body').on('click', '.app-dismiss-window', function () {
-            // window dismiss event
-            $(this).closest('.window').fadeOut(IS3.visualisations.config.transition_duration, function () {
-                $(this).remove();
-                IS3.visualisations.refreshWindows();
-            });
-        }).on('click', '.app-minimize-window', function () {
-            // window minimize event
-            IS3.visualisations.minimize($(this).closest('.window'));
-        }).on('click', '#app-bring-back-window-buttons button', function () {
-            // bring window back
-            var window_number = $(this).data('window-number'),
-                window = $('#app-minimized-windows').find('.window[data-window-number="' + window_number + '"]');
-
-            // reattach window
-            IS3.visualisations.addWindow(window);
-
-            // remove button
-            $(this).fadeOut(function() { $(this).remove() });
-        }).on('click', '.app-maximize-window', function() {
-            IS3.visualisations.maximize($(this).closest('.window'));
-        });
-
-        // place bring back buttons according to browser size
-        $(window).resize(function () {
-            $('#app-bring-back-window-buttons').css({
-                top: $(this).height() - 40
-            })
-        }).resize();
     },
-    maximize: function(window) {
-        $('#app-window-container .window').each(function () {
-            if (this != window.get(0)) {
-                IS3.visualisations.minimize(this);
-            }
-        });
-        IS3.visualisations.refreshWindows();
-    },
-    minimize: function (window) {
-        $(window).fadeOut(IS3.visualisations.config.transition_duration, function () {
-            var button = $('<button class="btn btn-default"></button>')
-                .html($('.title input', this).val())
-                .data('window-number', $(this).data('window-number'));
-
-            $('#app-minimized-windows').append(this);
-            $('#app-bring-back-window-buttons').append(button);
-            IS3.visualisations.refreshWindows();
-        });
-    },
-    addWindow: function(window) {
-        var container = $('#app-window-container');
-
-        if ($('.window', container).length >= 2)
-            IS3.visualisations.minimize($('.window:first', container));
-            container.append(window);
-
-        this.refreshWindows();
-        window.fadeIn();
-    },
-
-    refreshWindows: function() {
-        var container = $('#app-window-container');
-
-        if ($('.window', container).length >= 2) {
-            $('.window', container).css('width', '50%');
-        } else {
-            $('.window', container).css('width', '100%');
-        }
-    },
-
-    add: function () {
-        var container = $('#app-window-template').clone()
-            .removeAttr('id')
-            .attr('data-window-number', IS3.visualisations.config.window_number);
-        var node = $('.content', container).get(0);
-
-        $('input[name="title"]', container).val("#" + IS3.visualisations.config.window_number + " "
-            + $('#app-factors option:selected').html());
-
-        IS3.visualisations.config.window_number++;
-
-        // update window height
-        $(window).resize(function () {
-            $(container).css('height', $(window).height());
-            //$(container).css('width', $(window).parent().width());
-        }).resize();
-
-        switch ($('#app-visualisations').val()) {
-            case "map":
-                IS3.visualisations.buildMap(node);
-                break;
-            case "line":
-                IS3.visualisations.drawLineGraph(node);
-        }
-
-        IS3.visualisations.addWindow(container);
-    },
-
     drawLineGraph: function (container) {
         var councils = IS3.data.getSelectedCouncils(),
             lineData = [],

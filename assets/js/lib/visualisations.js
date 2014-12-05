@@ -1,29 +1,119 @@
 IS3.visualisations = {
     types: {
         map: "Map",
-        line: "Line Chart"
+        line: "Step Chart",
+        bar: "Bar Chart"
     },
     init: function () {
         $.each(this.types, function (key, value) {
             $('#app-visualisations').append('<option value="' + key + '">' + value + '</option>')
         });
     },
-    drawLineGraph: function (container) {
-        var councils = IS3.data.getSelectedCouncils(),
-            lineData = [],
-            data_type = $('#app-factors').val();
+    drawBarChart: function (container) {
+        var barData = IS3.data.getChartData();
 
-        $.each(councils, function() {
-            lineData.push({
-                gss: this,
-                x: parseInt(IS3.data.getDeprivationPercentage(data_type, this) * 100),
-                y: parseInt(IS3.data.getReferrendumPercentage(this))
-            });
-        });
+        var WIDTH = 1000,
+            HEIGHT = 500,
+            MARGINS = {
+                top: 20,
+                right: 20,
+                bottom: 20,
+                left: 50
+            },
+            xRange = d3.scale.ordinal().rangeRoundBands([MARGINS.left, WIDTH - MARGINS.right], 0.1).domain(barData.map(function(d) {
+                return d.x;
+            })),
 
-        lineData.sort(function(a, b) {
-            return a.x - b.x;
-        });
+            yRange = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([0, d3.max(barData, function(d) {
+                return d.y;
+            })]),
+
+            xAxis = d3.svg.axis()
+                .scale(xRange)
+                .tickSize(5)
+                .tickSubdivide(true),
+
+            yAxis = d3.svg.axis()
+                .scale(yRange)
+                .tickSize(5)
+                .orient("left")
+                .tickSubdivide(true);
+
+
+        function zoom() {
+            svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+        }
+
+        var minZoomRatio = 0.5,
+            maxZoomRatio = 2,
+            zoomListener = d3.behavior.zoom().scaleExtent([minZoomRatio, maxZoomRatio]).on("zoom", zoom);
+
+        var width = $(container).width(),
+            height = $(container).height();
+
+        var svg = d3.select(container).append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .call(zoomListener);
+
+        $(window).resize(function () {
+            d3.select(container).select('svg').attr('height', $(window).height());
+            svg.attr('height', $(window).height());
+        }).resize();
+
+        var svg = svg.append("g")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("transform", "translate(0,0)");
+
+
+        svg.append('g')
+            .attr('class', 'x axis')
+            .attr('transform', 'translate(0,' + (HEIGHT - MARGINS.bottom) + ')')
+            .call(xAxis);
+
+        svg.append('g')
+            .attr('class', 'y axis')
+            .attr('transform', 'translate(' + (MARGINS.left) + ',0)')
+            .call(yAxis);
+
+        svg.append("text")
+            .attr("class", "y label")
+            .attr("text-anchor", "end")
+            .attr("x", width + WIDTH / 2 + MARGINS.left)
+            .attr("y", height + HEIGHT + MARGINS.top)
+            .text("Factor Rating %");
+
+        svg.append("text")
+            .attr("class", "x label")
+            .attr("text-anchor", "end")
+            .attr("x", width + MARGINS.left)
+            .attr("y", height + MARGINS.top / 2)
+            .text("Votes %");
+
+        svg.selectAll('rect')
+            .data(barData)
+            .enter()
+            .append('rect')
+            .attr('gss', function (d) {
+                IS3.visualisations.addHover(d3.select(this));
+                return d.gss;
+            })
+            .attr('x', function(d) { // sets the x position of the bar
+                return xRange(d.x);
+            })
+            .attr('y', function(d) { // sets the y position of the bar
+                return yRange(d.y);
+            })
+            .attr('width', xRange.rangeBand()) // sets the width of bar
+            .attr('height', function(d) {      // sets the height of bar
+                return ((HEIGHT - MARGINS.bottom) - yRange(d.y));
+            })
+            .attr('fill', 'grey');   // fills the bar with grey color
+
+    },
+    drawLineChart: function (container) {
+        var lineData = IS3.data.getChartData();
 
         WIDTH = 1000,
             HEIGHT = 500,
@@ -33,14 +123,14 @@ IS3.visualisations = {
                 bottom: 20,
                 left: 50
             },
-            xRange = d3.scale.linear().range([MARGINS.left, WIDTH - MARGINS.right]).domain([d3.min(lineData, function(d) {
+            xRange = d3.scale.linear().range([MARGINS.left, WIDTH - MARGINS.right]).domain([d3.min(lineData, function (d) {
                 return d.x;
-            }), d3.max(lineData, function(d) {
+            }), d3.max(lineData, function (d) {
                 return d.x;
             })]),
-            yRange = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([d3.min(lineData, function(d) {
+            yRange = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([d3.min(lineData, function (d) {
                 return d.y - 3;
-            }), d3.max(lineData, function(d) {
+            }), d3.max(lineData, function (d) {
                 return d.y;
             })]),
             xAxis = d3.svg.axis()
@@ -104,10 +194,10 @@ IS3.visualisations = {
             .text("Votes %");
 
         var lineFunc = d3.svg.line()
-            .x(function(d) {
+            .x(function (d) {
                 return xRange(d.x);
             })
-            .y(function(d) {
+            .y(function (d) {
                 return yRange(d.y);
             })
             .interpolate('step');
@@ -121,7 +211,7 @@ IS3.visualisations = {
             var el = svg.append('path')
                 .attr('class', 'line')
                 .attr('gss', lineData[i].gss)
-                .attr('d', lineFunc([lineData[i], lineData[i+1]]))
+                .attr('d', lineFunc([lineData[i], lineData[i + 1]]))
                 .attr('stroke-width', 2)
                 .attr('fill', 'none');
 
@@ -195,7 +285,7 @@ IS3.visualisations = {
                 var el = g.append("path")
                     .datum(council)
                     .attr("class", "app-council-area")
-                    .attr("gss", function(area) {
+                    .attr("gss", function (area) {
                         return area.features[0].properties.gss;
                     })
                     .style("fill", function (area) {

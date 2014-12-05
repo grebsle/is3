@@ -207,3 +207,7 @@ h6, .h6 {
 text.label {
     font-size: 16px;
 }
+
+.window rect {
+    fill: #2e6da4;
+}

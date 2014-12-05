@@ -108,5 +108,24 @@ IS3.data = {
             return councils;
         } else
             return $('#app-councils').val();
+    },
+    getChartData: function() {
+        var councils = IS3.data.getSelectedCouncils(),
+            lineData = [],
+            data_type = $('#app-factors').val();
+
+        $.each(councils, function() {
+            lineData.push({
+                gss: this,
+                x: parseInt(IS3.data.getDeprivationPercentage(data_type, this) * 100),
+                y: parseInt(IS3.data.getReferrendumPercentage(this))
+            });
+        });
+
+        lineData.sort(function(a, b) {
+            return a.x - b.x;
+        });
+
+        return lineData;
     }
 };

@@ -55,7 +55,11 @@ IS3.windows = {
                 IS3.visualisations.buildMap(node);
                 break;
             case "line":
-                IS3.visualisations.drawLineGraph(node);
+                IS3.visualisations.drawLineChart(node);
+                break;
+            case "bar":
+                IS3.visualisations.drawBarChart(node);
+                break;
         }
 
         IS3.windows.add(container);

@@ -1,6 +1,6 @@
 IS3.data = {
     types: {
-        access: "Access",
+        access: "Access Deprivation",
         crime: "Crime",
         education: "Education",
         employment: "Employment",
@@ -97,5 +97,16 @@ IS3.data = {
     },
     getCouncilName: function(code) {
         return IS3.data.data.councils[code];
+    },
+    getSelectedCouncils: function() {
+        if ($('#app-councils').val() == null) {
+            var councils = [];
+            $('#app-councils option').each(function () {
+                councils.push($(this).val());
+            });
+
+            return councils;
+        } else
+            return $('#app-councils').val();
     }
 };

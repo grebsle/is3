@@ -162,6 +162,10 @@ h6, .h6 {
     float: left;
 }
 
+#app-window-container .window .content svg {
+    width: 100%;
+}
+
 #app-window-container .window .header {
     position: absolute;
     width: 100%;
@@ -187,4 +191,15 @@ h6, .h6 {
 #app-bring-back-window-buttons {
     position: absolute;
     left: 10px;
+}
+
+.axis .domain {
+    fill: #2e6da4;
+    /*height: 5px;*/
+    /*width: 15px;*/
+    /*stroke: 4px #2e6da4;*/
+}
+
+.window .content .line {
+    stroke: #2e6da4;
 }

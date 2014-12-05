@@ -2,13 +2,75 @@ IS3.visualisations = {
     types: {
         map: "Map",
         line: "Step Chart",
-        bar: "Bar Chart"
+        bar: "Bar Chart",
+        pie: "Pie Chart"
     },
     init: function () {
         $.each(this.types, function (key, value) {
             $('#app-visualisations').append('<option value="' + key + '">' + value + '</option>')
         });
     },
+
+    drawPieChart: function (container) {
+        var margin = 40;
+        var w = 400;
+        var h = 400;
+        var r = h / 2;
+        var color = d3.scale.category20c();
+
+        var data = IS3.data.getChartData();
+
+        var svg = this.appendSvg(container).append("svg:svg")
+            .data([data]).attr("width", w + margin).attr("height", h + margin)
+            .append("svg:g").attr("transform", "translate(" + (r + margin) + "," + (r + margin) + ")");
+        var pie = d3.layout.pie().value(function (d) {
+            return d.x;
+        });
+
+        var arc = d3.svg.arc().outerRadius(r);
+
+        var arcs = svg.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
+        arcs.append("svg:path")
+            .attr("fill", function (d, i) {
+                return color(i);
+            })
+            .attr("gss", function (d) {
+                IS3.visualisations.addHover(d3.select(this));
+                return d.data.gss;
+            })
+            .attr("d", function (d) {
+                return arc(d);
+            });
+    },
+
+    appendSvg: function(container) {
+        function zoom() {
+            svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+        }
+
+        var minZoomRatio = 0.5,
+            maxZoomRatio = 2,
+            zoomListener = d3.behavior.zoom().scaleExtent([minZoomRatio, maxZoomRatio]).on("zoom", zoom);
+
+        var width = $(container).width(),
+            height = $(container).height();
+
+        var svg = d3.select(container).append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .call(zoomListener);
+
+        $(window).resize(function () {
+            d3.select(container).select('svg').attr('height', $(window).height());
+            svg.attr('height', $(window).height());
+        }).resize();
+
+        return svg = svg.append("g")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("transform", "translate(0,0)");
+    },
+
     drawBarChart: function (container) {
         var barData = IS3.data.getChartData();
 
@@ -20,11 +82,11 @@ IS3.visualisations = {
                 bottom: 20,
                 left: 50
             },
-            xRange = d3.scale.ordinal().rangeRoundBands([MARGINS.left, WIDTH - MARGINS.right], 0.1).domain(barData.map(function(d) {
+            xRange = d3.scale.ordinal().rangeRoundBands([MARGINS.left, WIDTH - MARGINS.right], 0.1).domain(barData.map(function (d) {
                 return d.x;
             })),
 
-            yRange = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([0, d3.max(barData, function(d) {
+            yRange = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([0, d3.max(barData, function (d) {
                 return d.y;
             })]),
 
@@ -99,14 +161,14 @@ IS3.visualisations = {
                 IS3.visualisations.addHover(d3.select(this));
                 return d.gss;
             })
-            .attr('x', function(d) { // sets the x position of the bar
+            .attr('x', function (d) { // sets the x position of the bar
                 return xRange(d.x);
             })
-            .attr('y', function(d) { // sets the y position of the bar
+            .attr('y', function (d) { // sets the y position of the bar
                 return yRange(d.y);
             })
             .attr('width', xRange.rangeBand()) // sets the width of bar
-            .attr('height', function(d) {      // sets the height of bar
+            .attr('height', function (d) {      // sets the height of bar
                 return ((HEIGHT - MARGINS.bottom) - yRange(d.y));
             })
             .attr('fill', 'grey');   // fills the bar with grey color
@@ -318,7 +380,10 @@ IS3.visualisations = {
                 });
             });
         }).on("mouseout", function () {
-            $(this).data('hover-element').fadeOut();
+            var el = $(this).data('hover-element');
+            if (el.length)
+                $(this).data('hover-element').fadeOut();
+
             $(this).removeClass('hover');
         });
     },

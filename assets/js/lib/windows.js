@@ -60,6 +60,9 @@ IS3.windows = {
             case "bar":
                 IS3.visualisations.drawBarChart(node);
                 break;
+            case "pie":
+                IS3.visualisations.drawPieChart(node);
+                break;
         }
 
         IS3.windows.add(container);

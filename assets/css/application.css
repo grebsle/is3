@@ -195,9 +195,6 @@ h6, .h6 {
 
 .axis .domain {
     fill: #2e6da4;
-    /*height: 5px;*/
-    /*width: 15px;*/
-    /*stroke: 4px #2e6da4;*/
 }
 
 .window .content .line {
@@ -210,4 +207,9 @@ text.label {
 
 .window rect {
     fill: #2e6da4;
+}
+
+.window .slice path:hover {
+    stroke-width: 2px;
+    stroke: #2e6da4;
 }

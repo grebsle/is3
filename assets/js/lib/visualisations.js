@@ -17,6 +17,7 @@ IS3.visualisations = {
             // window dismiss event
             $(this).closest('.window').fadeOut(IS3.visualisations.config.transition_duration, function () {
                 $(this).remove();
+                IS3.visualisations.refreshWindows();
             });
         }).on('click', '.app-minimize-window', function () {
             // window minimize event
@@ -87,7 +88,9 @@ IS3.visualisations = {
             .removeAttr('id')
             .attr('data-window-number', IS3.visualisations.config.window_number);
         var node = $('.content', container).get(0);
-        $('input[name="title"]', container).val("Window #" + IS3.visualisations.config.window_number);
+
+        $('input[name="title"]', container).val("#" + IS3.visualisations.config.window_number + " "
+            + $('#app-factors option:selected').html());
 
         IS3.visualisations.config.window_number++;
 
@@ -139,7 +142,7 @@ IS3.visualisations = {
                 return d.x;
             })]),
             yRange = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([d3.min(lineData, function(d) {
-                return d.y;
+                return d.y - 3;
             }), d3.max(lineData, function(d) {
                 return d.y;
             })]),
@@ -152,7 +155,6 @@ IS3.visualisations = {
                 .tickSize(3)
                 .orient('left')
                 .tickSubdivide(true);
-
 
         function zoom() {
             svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
@@ -190,6 +192,20 @@ IS3.visualisations = {
             .attr('transform', 'translate(' + (MARGINS.left) + ',0)')
             .call(yAxis);
 
+        svg.append("text")
+            .attr("class", "y label")
+            .attr("text-anchor", "end")
+            .attr("x", width + WIDTH / 2 + MARGINS.left)
+            .attr("y", height + HEIGHT + MARGINS.top)
+            .text("Factor Rating %");
+
+        svg.append("text")
+            .attr("class", "x label")
+            .attr("text-anchor", "end")
+            .attr("x", width + MARGINS.left)
+            .attr("y", height + MARGINS.top / 2)
+            .text("Votes %");
+
         var lineFunc = d3.svg.line()
             .x(function(d) {
                 return xRange(d.x);
@@ -208,7 +224,7 @@ IS3.visualisations = {
             var el = svg.append('path')
                 .attr('class', 'line')
                 .attr('gss', lineData[i].gss)
-                .attr('d', lineFunc([lineData[i], intermediate]))
+                .attr('d', lineFunc([lineData[i], lineData[i+1]]))
                 .attr('stroke-width', 2)
                 .attr('fill', 'none');
 

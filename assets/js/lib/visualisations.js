@@ -273,7 +273,7 @@ IS3.visualisations = {
             var el = svg.append('path')
                 .attr('class', 'line')
                 .attr('gss', lineData[i].gss)
-                .attr('d', lineFunc([lineData[i], lineData[i + 1]]))
+                .attr('d', lineFunc([lineData[i], intermediate]))
                 .attr('stroke-width', 2)
                 .attr('fill', 'none');
 
